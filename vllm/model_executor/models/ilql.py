@@ -258,21 +258,15 @@ class ILQLHeads(nn.Module):
         self.beta = self.config.beta
 
         n_qs = 2 if self.two_qs else 1
-        # self.q_heads = nn.ModuleList(make_head(self.hidden_size, self.vocab_size, linear_method=UnquantizedLinearMethod) for _ in range(n_qs))
-        self.q_heads = nn.ModuleList(make_head(self.hidden_size, self.vocab_size) for _ in range(n_qs))
-        self.target_q_heads = nn.ModuleList(deepcopy(q_head) for q_head in self.q_heads)
-
-        for target_q_head in self.target_q_heads:
-            target_q_head.requires_grad_(False)
+        self.target_q_heads = nn.ModuleList(make_head(self.hidden_size, self.vocab_size) for _ in range(n_qs))
 
     def forward(
         self,
-        hs: TensorType["seq_len", "batch", "hidden"],
+        hs: TensorType["seq_len", "hidden"],
         **kwargs,
     ) -> TensorType["states_seq_len", "hidden"]:
         states_hs = actions_hs = hs
 
-        qs = tuple(q_head(actions_hs) for q_head in self.q_heads)
         target_qs = tuple(q_head(actions_hs) for q_head in self.target_q_heads)
         vs = self.v_head(states_hs)
 
