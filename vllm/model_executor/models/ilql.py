@@ -262,9 +262,9 @@ class ILQLHeads(nn.Module):
 
     def forward(
         self,
-        hs: TensorType["seq_len", "hidden"],
+        hs: TensorType["seq_len", "batch", "hidden"],
         **kwargs,
-    ) -> TensorType["states_seq_len", "hidden"]:
+    ) -> TensorType["batch", "hidden"]:
         states_hs = actions_hs = hs
 
         target_qs = tuple(q_head(actions_hs) for q_head in self.target_q_heads)
@@ -273,7 +273,7 @@ class ILQLHeads(nn.Module):
         if self.two_qs:
             qs = torch.minimum(target_qs[0][:, -1, :], target_qs[1][:, -1, :])
         else:
-            qs = target_qs[0][-1, :]
+            qs = target_qs[0][:, -1, :]
 
         vs = vs[:, -1, :]
         adv = self.beta * (qs - vs)
