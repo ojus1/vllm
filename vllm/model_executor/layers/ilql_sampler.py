@@ -50,6 +50,8 @@ class IlqlSampler(nn.Module):
         # Get the logits for the next tokens.
         logits = _get_logits(hidden_states, embedding, embedding_bias,
                              self.vocab_size)
+        logits = torch.log_softmax(logits, dim=-1, dtype=torch.float)
+        logits.add_(logit_bias)
 
         _, vocab_size = logits.shape
 
@@ -86,9 +88,9 @@ class IlqlSampler(nn.Module):
 
 
         # compute pseudo-logits with logit_bias (from ilql) added
-        mask = logits > -float("inf")
-        logits = torch.log_softmax(logits, dim=-1, dtype=torch.float)
-        logits.add_(logit_bias * mask)
+        # mask = logits > -float("inf")
+        # logits = torch.log_softmax(logits, dim=-1, dtype=torch.float)
+        # logits.add_(logit_bias * mask)
 
         # We use float32 for probabilities and log probabilities.
         # Compute the probabilities.
