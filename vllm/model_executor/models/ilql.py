@@ -31,14 +31,9 @@ from vllm.model_executor.input_metadata import InputMetadata
 from vllm.model_executor.layers.activation import SiluAndMul
 from vllm.model_executor.layers.attention import PagedAttention
 from vllm.model_executor.layers.layernorm import RMSNorm
-from vllm.model_executor.layers.linear import (LinearMethodBase,
-                                               UnquantizedLinearMethod,
-                                               MergedColumnParallelLinear,
-                                               QKVParallelLinear,
-                                               RowParallelLinear,
-                                               ColumnParallelLinear)
+from vllm.model_executor.layers.linear import LinearMethodBase
 from vllm.model_executor.layers.rotary_embedding import get_rope
-from vllm.model_executor.layers.ilql_sampler import IlqlSampler
+from vllm.model_executor.layers.sampler import IlqlSampler
 from vllm.model_executor.models.llama import LlamaModel
 from vllm.model_executor.layers.vocab_parallel_embedding import (
     VocabParallelEmbedding, ParallelLMHead)
